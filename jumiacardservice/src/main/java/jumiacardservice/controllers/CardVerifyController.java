@@ -5,7 +5,9 @@ import jumiacardservice.dto.ErrorResponse;
 import jumiacardservice.dto.ValidateCardApiResponse;
 import jumiacardservice.dto.ValidateCardResponse;
 import jumiacardservice.exceptions.BinListCommunicationException;
+import jumiacardservice.exceptions.CardNumberValidationException;
 import jumiacardservice.service.CardService;
+import jumiacardservice.validators.CardNumberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,21 +21,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class CardVerifyController {
-	
+
+	private final CardNumberValidator cardNumberValidator;
 	private final CardService cardService;
 	private final CardDetailsConverter cardDetailsConverter;
-	
+
 	@GetMapping("/card-scheme/verify/{cardnumber}")
 	public ValidateCardResponse validate(@PathVariable("cardnumber") String cardNumber) {
 
-			final ValidateCardApiResponse cardApiResponse = cardService.validateCard(cardNumber);
-			return cardDetailsConverter.convert(cardApiResponse);
+		cardNumberValidator.isValid(cardNumber);
+		final ValidateCardApiResponse cardApiResponse = cardService.validateCard(cardNumber);
+		return cardDetailsConverter.convert(cardApiResponse);
 
 	}
 
 	@ExceptionHandler(BinListCommunicationException.class)
 	public ResponseEntity<ErrorResponse> handleException(final BinListCommunicationException e) {
 		log.error("Card validation error {}", e);
+
+		final ErrorResponse errorResponse = new ErrorResponse(false, e.getMessage(), HttpStatus.CONFLICT);
+		return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+	}
+	
+	@ExceptionHandler(CardNumberValidationException.class)
+	public ResponseEntity<ErrorResponse> handleException(final CardNumberValidationException e) {
+		log.error("InHouse Card validation error {}", e);
 
 		final ErrorResponse errorResponse = new ErrorResponse(false, e.getMessage(), HttpStatus.CONFLICT);
 		return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);

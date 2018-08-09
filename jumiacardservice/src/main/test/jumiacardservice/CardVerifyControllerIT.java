@@ -45,11 +45,27 @@ public class CardVerifyControllerIT {
 
         assertThat(response.isSuccess()).isFalse();
     }
+    
+    @Test
+    public void cardValidationRequest_invalidCardWithLetters_returns409() throws Exception {
 
+        final String cardNumber = "552213A001463839";
+
+        final MvcResult result = mockMvc.perform(
+            get("/card-scheme/verify/{cardNumber}", cardNumber)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isConflict())
+            .andReturn();
+
+        final ErrorResponse response = mapper.readValue(result.getResponse().getContentAsByteArray(), ErrorResponse.class);
+
+        assertThat(response.isSuccess()).isFalse();
+    }
     @Test
     public void cardValidationRequest_validCard_returns200ValidateCardResponse() throws Exception {
 
-        final String cardNumber = "371449635398438";
+        final String cardNumber = "5522139001463839";
 
         final MvcResult result = mockMvc.perform(
             get("/card-scheme/verify/{cardNumber}", cardNumber)
