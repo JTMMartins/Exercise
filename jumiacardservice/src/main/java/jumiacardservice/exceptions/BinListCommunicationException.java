@@ -1,4 +1,4 @@
-package jumiacardService.exceptions;
+package jumiacardservice.exceptions;
 
 
 public class BinListCommunicationException extends RuntimeException {

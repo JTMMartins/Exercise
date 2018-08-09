@@ -1,10 +1,10 @@
 package jumiacardservice.controllers;
 
-import jumiacardService.exceptions.BinListCommunicationException;
 import jumiacardservice.converters.CardDetailsConverter;
 import jumiacardservice.dto.ErrorResponse;
 import jumiacardservice.dto.ValidateCardApiResponse;
 import jumiacardservice.dto.ValidateCardResponse;
+import jumiacardservice.exceptions.BinListCommunicationException;
 import jumiacardservice.service.CardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

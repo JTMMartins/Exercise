@@ -1,7 +1,7 @@
 package jumiacardservice.service;
 
-import jumiacardService.exceptions.BinListCommunicationException;
 import jumiacardservice.dto.ValidateCardApiResponse;
+import jumiacardservice.exceptions.BinListCommunicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
